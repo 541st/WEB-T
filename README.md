@@ -22,9 +22,8 @@
       id
       email
       password_hash
+      keyword
       name
-      phone
-      role (user/admin)
       created_at
     2) Бронь (Booking)
       id
