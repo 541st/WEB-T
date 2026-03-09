@@ -1,7 +1,7 @@
 <template>
   <div class="auth-page">
 
-    <div class="switcher">
+    <div class="switcher" v-if="mode !== 'reset'">
       <div
         class="switch-part"
         :class="{ active: mode === 'login' }"
@@ -21,42 +21,133 @@
       </div>
     </div>
 
-    <h1>{{ mode === 'login' ? 'Вход' : 'Создание аккаунта' }}</h1>
+    <h1> <!-- делим логин и регу -->
+      {{
+        mode === 'login'
+          ? 'Вход'
+          : mode === 'register'
+          ? 'Создание аккаунта'
+          : 'Восстановление пароля'
+      }}
+    </h1>
 
     <form @submit.prevent="submit" class="form">
 
       <input v-model="email" type="email" placeholder="Email" />
+      <input
+        v-if="mode === 'register'"
+        v-model="name"
+        type="text"
+        placeholder="Имя"
+      />
 
-      <input v-model="password" type="password" placeholder="Пароль" />
-      <!--  делим логин и регу -->
-      <input 
+      <!-- Авторизация -->
+      <input
+        v-if="mode === 'login'"
+        v-model="password"
+        type="password"
+        placeholder="Пароль"
+      />
+
+      <!-- Регистрация -->
+      <input
+        v-if="mode === 'register'"
+        v-model="password"
+        type="password"
+        placeholder="Пароль"
+      />
+
+      <input
+        v-if="mode === 'register'"
+        v-model="passwordConfirm"
+        type="password"
+        placeholder="Подтверждение пароля"
+      />
+
+      <input
         v-if="mode === 'register'"
         v-model="keyword"
         type="text"
         placeholder="Секретное слово"
       />
 
+      <!-- Восстановление пароля -->
+      <input
+        v-if="mode === 'reset'"
+        v-model="keyword"
+        type="text"
+        placeholder="Секретное слово"
+      />
+
+      <input
+        v-if="mode === 'reset'"
+        v-model="newPassword"
+        type="password"
+        placeholder="Новый пароль"
+      />
+
       <button class="main-btn">
-        {{ mode === 'login' ? 'Войти' : 'Зарегистрироваться' }}
+        {{
+          mode === 'login'
+            ? 'Войти'
+            : mode === 'register'
+            ? 'Зарегистрироваться'
+            : 'Сменить пароль'
+        }}
       </button>
     </form>
+
+    <!-- Забыл пароль -->
+    <div
+      v-if="mode === 'login'"
+      class="forgot"
+      @click="mode = 'reset'"
+    >
+      Забыли пароль?
+    </div>
+
+    <!-- Вернуться назад -->
+    <div
+      v-if="mode === 'reset'"
+      class="forgot"
+      @click="mode = 'login'"
+    >
+      Вернуться к авторизации
+    </div>
   </div>
 </template>
 
 <script setup>
 import { ref } from 'vue'
 
-const mode = ref('login')
+const mode = ref('login') // login | register | reset
 
 const email = ref('')
+const name = ref('')
 const password = ref('')
+const passwordConfirm = ref('')
 const keyword = ref('')
+const newPassword = ref('')
 
 const submit = () => {
   if (mode.value === 'login') {
     console.log('Авторизация:', email.value, password.value)
+  } else if (mode.value === 'register') {
+    console.log(
+      'Регистрация:',
+      email.value,
+      name.value,
+      password.value,
+      passwordConfirm.value,
+      keyword.value
+    )
   } else {
-    console.log('Регистрация:', email.value, password.value, keyword.value)
+    console.log(
+      'Восстановление:',
+      email.value,
+      keyword.value,
+      newPassword.value
+    )
   }
 }
 </script>
@@ -76,7 +167,7 @@ const submit = () => {
   border: 1px solid #ccc;
   border-radius: 30px;
   overflow: hidden;
-  background: #333; 
+  background: #333;
 }
 
 .switch-part {
@@ -85,12 +176,12 @@ const submit = () => {
   cursor: pointer;
   font-weight: 500;
   transition: 0.2s;
-  color: #ddd; 
+  color: #ddd;
 }
 
 .switch-part.active {
-  background: white;   
-  color: black;        
+  background: white;
+  color: black;
 }
 
 .divider {
@@ -98,14 +189,12 @@ const submit = () => {
   background: #555;
 }
 
-
 .form {
   display: flex;
   flex-direction: column;
   gap: 15px;
 }
 
-/* Поля ввода */
 input {
   padding: 12px;
   border-radius: 10px;
@@ -126,5 +215,13 @@ input {
 
 .main-btn:hover {
   background: #555;
+}
+
+.forgot {
+  margin-top: 15px;
+  color: #0077ff;
+  cursor: pointer;
+  font-size: 14px;
+  text-decoration: underline;
 }
 </style>
