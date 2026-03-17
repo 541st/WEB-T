@@ -131,7 +131,34 @@ const newPassword = ref('')
 
 const submit = async () => {
   if (mode.value === 'login') {
-    console.log('Авторизация:', email.value, password.value)
+      try {
+    const response = await fetch('http://localhost:3000/api/auth/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        email: email.value,
+        password: password.value
+      })
+    })
+
+    const data = await response.json()
+
+    if (!response.ok) {
+      alert(data.message || 'Ошибка входа')
+      return
+    }
+
+    alert('Успешный вход!')
+
+    // Сохраняем токен
+    localStorage.setItem('token', data.token)
+
+    // мб редирект куда-нибудь
+
+  } catch (err) {
+    console.error(err)
+    alert('Ошибка соединения с сервером')
+  }
   } else if (mode.value === 'register') {
   if (password.value !== passwordConfirm.value) {
     alert('Пароли не совпадают')
