@@ -1,16 +1,14 @@
 import express from 'express'
 import { db } from './config/db.js'
+import authRoutes from './routes/authRoutes.js'
+import cors from 'cors'
 
 const app = express()
+app.use(cors())
 
-app.get('/test-db', async (req, res) => {
-  try {
-    const [rows] = await db.query('SELECT 1 + 1 AS result')
-    res.json({ ok: true, result: rows[0].result })
-  } catch (err) {
-    res.status(500).json({ ok: false, error: err.message })
-  }
-})
+app.use(express.json())
+// рега
+app.use('/api/auth', authRoutes)
 
 app.listen(3000, () => {
   console.log('Server running on http://localhost:3000')

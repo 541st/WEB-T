@@ -129,19 +129,42 @@ const passwordConfirm = ref('')
 const keyword = ref('')
 const newPassword = ref('')
 
-const submit = () => {
+const submit = async () => {
   if (mode.value === 'login') {
     console.log('Авторизация:', email.value, password.value)
   } else if (mode.value === 'register') {
-    console.log(
-      'Регистрация:',
-      email.value,
-      name.value,
-      password.value,
-      passwordConfirm.value,
-      keyword.value
-    )
-  } else {
+  if (password.value !== passwordConfirm.value) {
+    alert('Пароли не совпадают')
+    return
+  }
+
+  try {
+    const response = await fetch('http://localhost:3000/api/auth/register', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        email: email.value,
+        password: password.value,
+        name: name.value,
+        keyword: keyword.value
+      })
+    })
+
+    const data = await response.json()
+
+    if (!response.ok) {
+      alert(data.message || 'Ошибка регистрации')
+      return
+    }
+
+    alert('Регистрация успешна!')
+    mode.value = 'login' 
+
+  } catch (err) {
+    console.error(err)
+    alert('Ошибка соединения с сервером')
+  }
+} else {
     console.log(
       'Восстановление:',
       email.value,
