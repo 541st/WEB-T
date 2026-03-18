@@ -5,6 +5,7 @@
 
             <div class="menu">
                 <router-link to="/auth">Вход</router-link>
+                <router-link to="/catalog">Каталог</router-link>
                 <router-link to="/profile">Профиль</router-link>
             </div>
         </nav>

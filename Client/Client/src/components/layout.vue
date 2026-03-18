@@ -5,9 +5,9 @@
     <div class="background"></div>
 
     <main class="content">
-        <div class="center-box">
-            <slot />
-        </div>
+      <div :class="['center-box', { 'no-center': $route.name === 'catalog' }]">
+          <slot />
+      </div>
     </main>
   </div>
 </template>
@@ -37,7 +37,6 @@ import MainHeader from '../components/MainHeader.vue'
 .content {
     display: flex;
     justify-content: center;
-    align-items: center;
     min-height: calc(100vh - 60px); /* чтобы было под шапкой */
     padding-top: 60px;
 }
@@ -51,4 +50,14 @@ import MainHeader from '../components/MainHeader.vue'
   backdrop-filter: blur(8px); 
   box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
 }
+
+.no-center {
+  width: 100%;
+  max-width: 900px;
+  margin-top: 120px; 
+  background: rgba(0, 0, 0, 0.55);
+  padding: 40px;
+  border-radius: 16px;
+}
+
 </style>

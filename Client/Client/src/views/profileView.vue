@@ -7,6 +7,7 @@
     <div v-if="bookings.length === 0">
       Пока нет забронированных ПК
     </div>
+    <button class="logout-btn" @click="logout">Выйти</button>
   </div>
 </template>
 
@@ -32,6 +33,7 @@ onMounted(async () => {
   })
 
   if (!response.ok) {
+    // пока не истекает
     alert('Сессия истекла, войдите снова')
     localStorage.removeItem('token')
     window.location.href = '/auth' 
@@ -42,6 +44,11 @@ onMounted(async () => {
   user.value = data.user
   bookings.value = data.bookings
 })
+
+function logout() {
+  localStorage.removeItem('token')
+  window.location.href = '/auth'
+}
 </script>
 
 <style scoped>
@@ -49,5 +56,20 @@ onMounted(async () => {
   max-width: 600px;
   margin: 40px auto;
   text-align: center;
+}
+
+.logout-btn {
+  margin-top: 25px;
+  padding: 10px 18px;
+  background: #ef4444;
+  border: none;
+  border-radius: 6px;
+  color: white;
+  cursor: pointer;
+  font-weight: 500;
+}
+
+.logout-btn:hover {
+  background: #dc2626;
 }
 </style>

@@ -155,7 +155,6 @@ const submit = async () => {
     // Сохраняем токен
     localStorage.setItem('token', data.token)
 
-    // мб редирект куда-нибудь
 
   } catch (err) {
     console.error(err)
