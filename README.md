@@ -49,7 +49,7 @@
         Метод  URL  Описание
         POST  /booking  создать бронь
         GET  /booking/my  мои брони
-        DELETE  /booking/:id  отменить бронь  
+        DELETE  /booking/:id  отменить бронь
       
 ;     Акции
         Метод  URL  Описание

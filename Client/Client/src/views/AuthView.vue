@@ -149,6 +149,8 @@ const submit = async () => {
     }
 
     alert('Успешный вход!')
+    localStorage.setItem('token', data.token)
+    window.location.href = '/profile'
 
     // Сохраняем токен
     localStorage.setItem('token', data.token)
