@@ -51,25 +51,5 @@ function logout() {
 }
 </script>
 
-<style scoped>
-.profile {
-  max-width: 600px;
-  margin: 40px auto;
-  text-align: center;
-}
+<style src="./profileView.css"></style>
 
-.logout-btn {
-  margin-top: 25px;
-  padding: 10px 18px;
-  background: #ef4444;
-  border: none;
-  border-radius: 6px;
-  color: white;
-  cursor: pointer;
-  font-weight: 500;
-}
-
-.logout-btn:hover {
-  background: #dc2626;
-}
-</style>
