@@ -2,80 +2,57 @@
   <div class="catalog">
     <h1 class="title">Каталог ПК</h1>
 
-    <div v-if="computers.length === 0" class="loading">
+    <div v-if="pcTypes.length === 0" class="loading">
       Загрузка списка ПК...
     </div>
 
     <div v-else class="pc-list">
       <div 
-        v-for="pc in computers" 
-        :key="pc.id" 
+        v-for="type in pcTypes" 
+        :key="type.id" 
         class="pc-item"
-        @click="selectPc(pc)"
       >
+        <img 
+          v-if="type.image_url" 
+          :src="type.image_url" 
+          alt="pc image" 
+          class="pc-image"
+        />
+
         <div class="pc-info">
-          <strong>{{ pc.title }}</strong> — {{ pc.status }}
+          <h2>{{ type.title }}</h2>
+          <p class="specs">{{ type.specs }}</p>
+          <p class="price">{{ type.price_per_hour }} BYN/час</p>
         </div>
 
-        <button 
-          class="status-btn"
-          @click.stop="toggleStatus(pc)"
-        >
-          {{ pc.status === 'free' ? 'Занять' : 'Освободить' }}
-        </button>
+        <div class="pc-actions">
+          <button @click="goToDetails(type.id)">Подробнее</button>
+          <button @click="goToBooking(type.id)">Забронировать</button>
+        </div>
       </div>
-    </div>
-
-    <!-- инфа о пк, потом страничкой сделать, кнопку на занять освободить поменять на редирект
-     на бронирование с красивой сеточкой -->
-    <div v-if="selectedPc" class="pc-details">
-      <h2>{{ selectedPc.title }}</h2>
-      <p>{{ selectedPc.specs }}</p>
     </div>
   </div>
 </template>
 
 <script setup>
 import { ref, onMounted } from 'vue'
+import { useRouter } from 'vue-router'
 
-const computers = ref([])
-const selectedPc = ref(null)
+const router = useRouter()
+const pcTypes = ref([])
 
 onMounted(async () => {
   const response = await fetch('http://localhost:3000/api/computers')
   const data = await response.json()
-  computers.value = data
+  pcTypes.value = data
 })
 
-function selectPc(pc) {
-  selectedPc.value = pc
+function goToDetails(id) {
+  router.push(`/computers/${id}`)
 }
-// закрываем кнопку для нон юзера
-async function toggleStatus(pc) {
-  const token = localStorage.getItem('token')
 
-  if (!token) {
-    alert('Вы не авторизованы')
-    return
-  }
-
-  const newStatus = pc.status === 'free' ? 'busy' : 'free'
-
-  const response = await fetch(`http://localhost:3000/api/computers/${pc.id}/status`, {
-    method: 'PUT',
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: 'Bearer ' + token
-    },
-    body: JSON.stringify({ status: newStatus })
-  })
-
-  if (!response.ok) {
-    alert('Ошибка: возможно, токен истёк')
-    return
-  }
-
-  pc.status = newStatus
+function goToBooking(id) {
+  router.push(`/booking?type=${id}`)
 }
 </script>
 

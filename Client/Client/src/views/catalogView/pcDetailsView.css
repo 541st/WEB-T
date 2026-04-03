@@ -1,0 +1,9 @@
+.place-item {
+  padding: 8px;
+  margin: 4px 0;
+  border-radius: 6px;
+  background: #f0f0f0;
+}
+.place-item.busy {
+  background: #ffcccc;
+}
