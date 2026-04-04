@@ -7,3 +7,7 @@
 .place-item.busy {
   background: #ffcccc;
 }
+.pc-image {
+  width: 80%;
+  height: 80%;
+}

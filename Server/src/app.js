@@ -5,6 +5,7 @@ import cors from 'cors'
 import profileRoutes from './routes/profileRoutes.js'
 import pcTypesRoutes from './routes/pcTypesRoutes.js'
 import dotenv from 'dotenv'
+import likesRoutes from './routes/likesRoutes.js'
 
 const app = express()
 app.use(cors())
@@ -17,6 +18,9 @@ app.use('/api/auth', authRoutes)
 app.use('/api/profile', profileRoutes)
 // инфа о компах
 app.use('/api/computers', pcTypesRoutes)
+// лайки в профиль
+app.use('/api/likes', likesRoutes)
+
 
 app.listen(3000, () => {
   console.log('Server running on http://localhost:3000')
