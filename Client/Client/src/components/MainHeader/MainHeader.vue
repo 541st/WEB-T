@@ -5,6 +5,7 @@
 
             <div class="menu">
                 <router-link to="/catalog">Каталог</router-link>
+                <router-link to="/booking">Забронировать</router-link>
                 <a @click="goToAuthOrProfile" style="cursor: pointer">
                     {{ isLoggedIn ? 'Профиль' : 'Вход' }}
                 </a>

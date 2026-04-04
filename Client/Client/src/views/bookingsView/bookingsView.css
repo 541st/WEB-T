@@ -1,0 +1,129 @@
+.booking-wrapper {
+  color: white;
+}
+
+.title {
+  text-align: center;
+  margin-bottom: 40px;
+  font-weight: 300;
+  letter-spacing: 2px;
+}
+
+.pc-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, 35px); 
+  gap: 12px;
+  justify-content: center;
+  margin-bottom: 50px;
+}
+
+.pc-dot {
+  width: 35px;
+  height: 35px;
+  background: #444; 
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.pc-dot:hover:not(.busy) {
+  background: #666;
+  transform: scale(1.1);
+}
+
+.pc-dot.busy {
+  background: #ff4d4d;
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.pc-dot.selected {
+  background: #00ff88;
+  box-shadow: 0 0 15px rgba(0, 255, 136, 0.6);
+  border-color: white;
+}
+
+.pc-row {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  margin-bottom: 25px;
+}
+
+.row-title {
+  text-align: center;
+  margin: 20px 0 10px;
+  opacity: 0.7;
+  font-weight: 300;
+}
+
+.booking-form {
+  background: rgba(255, 255, 255, 0.05);
+  padding: 25px;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  animation: slideUp 0.3s ease-out;
+}
+
+.info-row {
+  margin-bottom: 20px;
+  font-size: 1.2rem;
+  text-align: center;
+}
+
+.selected-value {
+  color: #00ff88;
+  font-weight: bold;
+  margin-left: 10px;
+}
+
+.time-inputs {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 20px;
+  align-items: flex-end;
+}
+
+.input-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.input-group label {
+  font-size: 0.8rem;
+  opacity: 0.6;
+  text-transform: uppercase;
+}
+
+input[type="datetime-local"] {
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid #444;
+  color: white;
+  padding: 10px;
+  border-radius: 6px;
+  outline: none;
+}
+
+.btn-confirm {
+  background: #00ff88;
+  color: #000;
+  border: none;
+  padding: 12px 30px;
+  border-radius: 6px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.btn-confirm:hover {
+  background: #00db75;
+  transform: translateY(-2px);
+}
+
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}

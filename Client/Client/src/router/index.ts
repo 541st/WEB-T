@@ -22,6 +22,11 @@ const router = createRouter({
     path: '/computers/:id',
     name: 'pc-details',
     component: () => import('../views/catalogView/pcDetailsView.vue')
+    },
+    {
+      path: '/booking',
+      name: 'booking',
+      component: () => import('../views/bookingsView/bookingsView.vue')
     }
   ]
 })

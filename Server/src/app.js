@@ -6,6 +6,7 @@ import profileRoutes from './routes/profileRoutes.js'
 import pcTypesRoutes from './routes/pcTypesRoutes.js'
 import dotenv from 'dotenv'
 import likesRoutes from './routes/likesRoutes.js'
+import pcsRoutes from './routes/pcsRoutes.js'
 
 const app = express()
 app.use(cors())
@@ -20,6 +21,8 @@ app.use('/api/profile', profileRoutes)
 app.use('/api/computers', pcTypesRoutes)
 // лайки в профиль
 app.use('/api/likes', likesRoutes)
+// бронька
+app.use('/api/pcs', pcsRoutes)
 
 
 app.listen(3000, () => {
