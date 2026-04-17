@@ -118,7 +118,7 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { onMounted, ref } from 'vue'
 
 const mode = ref('login') // login | register | reset
 
@@ -128,6 +128,14 @@ const password = ref('')
 const passwordConfirm = ref('')
 const keyword = ref('')
 const newPassword = ref('')
+
+onMounted(() => {
+  const token = localStorage.getItem('token')
+  
+  if (token) {
+    window.location.href = '/profile' 
+  }
+})
 
 const submit = async () => {
   if (mode.value === 'login') {

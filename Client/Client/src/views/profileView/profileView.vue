@@ -22,6 +22,13 @@
           {{ formatDate(b.start_time) }} — {{ formatDate(b.end_time) }}
         </div>
       </div>
+      <button 
+        v-if="hasMoreBookings" 
+        class="load-more-btn" 
+        @click="fetchProfile"
+      >
+        Загрузить еще
+      </button>
     </div>
 
     <h2 class="section-title">Ваши лайки</h2>
@@ -31,8 +38,15 @@
       <div v-for="like in likes" :key="like.pc_id" class="like-item">
         ❤️ {{ like.type_title }} (№{{ like.place_number }})
       </div>
+            <button 
+          v-if="hasMoreLikes" 
+          class="load-more-btn" 
+          @click="loadLikes"
+        >
+          Загрузить еще
+      </button>
     </div>
-
+    
     <button class="logout-btn" @click="logout">Выйти</button>
   </div>
 </template>
@@ -42,7 +56,34 @@ import { ref, onMounted } from 'vue'
 
 const user = ref(null)
 const bookings = ref([])
-const likes = ref([])
+
+const bookingPage = ref(1)
+const hasMoreBookings = ref(true)
+
+async function fetchProfile() {
+  const token = localStorage.getItem('token')
+  try {
+    const response = await fetch(`http://localhost:3000/api/profile?page=${bookingPage.value}`, {
+      headers: { Authorization: 'Bearer ' + token }
+    })
+
+    if (!response.ok) return
+
+    const data = await response.json()
+    
+    if (bookingPage.value === 1) {
+      user.value = data.user
+      bookings.value = data.bookings
+    } else {
+      bookings.value.push(...data.bookings)
+    }
+
+    hasMoreBookings.value = data.hasMore
+    bookingPage.value++ 
+  } catch (err) {
+    console.error('Ошибка загрузки профиля:', err)
+  }
+}
 
 const formatDate = (dateStr) => {
   const d = new Date(dateStr)
@@ -53,10 +94,14 @@ const formatDate = (dateStr) => {
     minute: '2-digit'
   })
 }
-// Пагинацию на лайки(сделать еще)
-async function loadLikes(token) {
+const likes = ref([])
+const likesPage = ref(1)
+const hasMoreLikes = ref(true)
+
+async function loadLikes() {
+  const token = localStorage.getItem('token')
   try {
-    const response = await fetch('http://localhost:3000/api/likes/my', {
+    const response = await fetch(`http://localhost:3000/api/likes/my?page=${likesPage.value}`, {
       headers: {
         Authorization: 'Bearer ' + token
       }
@@ -68,8 +113,15 @@ async function loadLikes(token) {
     }
 
     const data = await response.json()
-    // data — это массив, который возвращает getMyLikes
-    likes.value = data 
+    
+    if (likesPage.value === 1) {
+      likes.value = data.likes
+    } else {
+      likes.value.push(...data.likes)
+    }
+
+    hasMoreLikes.value = data.hasMore
+    likesPage.value++ 
   } catch (err) {
     console.error('Ошибка сети при загрузке лайков:', err)
   }
@@ -82,24 +134,7 @@ onMounted(async () => {
     window.location.href = '/auth'
     return
   }
-
-  const response = await fetch('http://localhost:3000/api/profile', {
-    headers: {
-      Authorization: 'Bearer ' + token
-    }
-  })
-
-  if (!response.ok) {
-    // пока не истекает
-    alert('Сессия истекла, войдите снова')
-    localStorage.removeItem('token')
-    window.location.href = '/auth' 
-    return
-  }
-
-  const data = await response.json()
-  user.value = data.user
-  bookings.value = data.bookings 
+  await fetchProfile()
   await loadLikes(token) 
 })
 

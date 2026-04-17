@@ -51,6 +51,10 @@ export const getMyLikes = async (req, res) => {
   const userId = req.user.id
 
   try {
+    const userId = req.user.id;
+    const page = parseInt(req.query.page) || 1;
+    const limit = 3; 
+    const offset = (page - 1) * limit;
     const [rows] = await db.query(
       `SELECT 
          likes.pc_id,
@@ -60,11 +64,15 @@ export const getMyLikes = async (req, res) => {
        FROM likes
        JOIN pcs ON likes.pc_id = pcs.id
        JOIN pc_types ON pcs.pc_type_id = pc_types.id
-       WHERE likes.user_id = ?`,
-      [userId]
+       WHERE likes.user_id = ?
+       LIMIT ? OFFSET ?`,
+      [userId, limit, offset],
     )
 
-    res.json(rows)
+    res.json({
+      likes: rows,
+      hasMore: rows.length === limit
+    });
   } catch (err) {
     console.error(err)
     res.status(500).json({ message: 'Ошибка сервера при получении лайков' })

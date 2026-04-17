@@ -4,6 +4,9 @@ export const getProfile = async (req, res) => {
   try {
     const userId = req.user.id;
 
+    const page = parseInt(req.query.page) || 1;
+    const limit = 3; 
+    const offset = (page - 1) * limit;
     await db.query(`
       UPDATE bookings 
       SET status = 'finished' 
@@ -37,13 +40,15 @@ export const getProfile = async (req, res) => {
        JOIN pcs p ON b.pc_id = p.id
        JOIN pc_types pt ON p.pc_type_id = pt.id
        WHERE b.user_id = ?
-       ORDER BY b.start_time DESC`, 
-      [userId]
+       ORDER BY b.start_time DESC
+       LIMIT ? OFFSET ?`, 
+      [userId, limit, offset], 
     )
 
     res.json({
       user: userRows[0],
-      bookings: bookingRows
+      bookings: bookingRows,
+      hasMore: bookingRows.length === limit
     })
   } catch (err) {
     console.error('Ошибка в getProfile:', err)
