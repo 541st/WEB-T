@@ -52,22 +52,20 @@
 }
 
 .status-dot.active {
-  background: #00ff88; /* Зеленый */
+  background: #00ff88; 
   box-shadow: 0 0 5px #00ff88;
 }
 
 .status-dot.finished {
-  background: #777; /* Серый */
+  background: #777; 
 }
 
-/* Сообщения */
 .empty-msg {
   text-align: left;
   opacity: 0.5;
   font-size: 0.9rem;
 }
 
-/* Кнопка выхода */
 .logout-btn {
   display: block;
   margin-top: 30px;

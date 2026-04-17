@@ -84,3 +84,39 @@ export const login = async (req, res) => {
     res.status(500).json({ message: 'Ошибка сервера' })
   }
 }
+
+export const resetPassword = async (req, res) => {
+  try {
+    const { email, keyword, newPassword } = req.body
+
+    if (!email || !keyword || !newPassword) {
+      return res.status(400).json({ message: 'Заполните все поля' })
+    }
+
+    const [rows] = await db.query('SELECT * FROM users WHERE email = ?', [email])
+    
+    if (rows.length === 0) {
+      return res.status(404).json({ message: 'Пользователь не найден' })
+    }
+
+    const user = rows[0]
+
+    const isKeywordMatch = await bcrypt.compare(keyword, user.keyword)
+
+    if (!isKeywordMatch) {
+      return res.status(401).json({ message: 'Неверное кодовое слово' })
+    }
+
+    const newPasswordHash = await bcrypt.hash(newPassword, 10)
+
+    await db.query(
+      'UPDATE users SET password_hash = ? WHERE id = ?', 
+      [newPasswordHash, user.id]
+    )
+
+    res.json({ message: 'Пароль успешно изменен' })
+  } catch (err) {
+    console.error(err)
+    res.status(500).json({ message: 'Ошибка сервера' })
+  }
+}

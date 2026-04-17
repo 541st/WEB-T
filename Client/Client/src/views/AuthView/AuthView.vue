@@ -193,12 +193,36 @@ const submit = async () => {
     alert('Ошибка соединения с сервером')
   }
 } else {
-    console.log(
-      'Восстановление:',
-      email.value,
-      keyword.value,
-      newPassword.value
-    )
+if (!email.value || !keyword.value || !newPassword.value) {
+      alert('Заполните email, кодовое слово и новый пароль')
+      return
+    }
+
+    try {
+      const response = await fetch('http://localhost:3000/api/auth/reset-password', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          email: email.value,
+          keyword: keyword.value,
+          newPassword: newPassword.value
+        })
+      })
+
+      const data = await response.json()
+
+      if (!response.ok) {
+        alert(data.message || 'Ошибка при сбросе пароля')
+        return
+      }
+
+      alert('Пароль успешно изменен! Теперь вы можете войти.')
+      mode.value = 'login' 
+
+    } catch (err) {
+      console.error(err)
+      alert('Ошибка соединения с сервером')
+    }
   }
 }
 </script>
