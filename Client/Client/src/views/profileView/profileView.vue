@@ -27,7 +27,7 @@ import { ref, onMounted } from 'vue'
 const user = ref(null)
 const bookings = ref([])
 const likes = ref([])
-
+// Пагинацию на лайки(сделать еще)
 async function loadLikes(token) {
   try {
     const response = await fetch('http://localhost:3000/api/likes/my', {

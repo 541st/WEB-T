@@ -55,13 +55,28 @@
       </div>
       <div class="time-inputs">
         <div class="input-group">
-          <label>Начало</label>
-          <input type="datetime-local" v-model="startTime" />
+          <label>Время начала</label>
+          <input type="datetime-local" v-model="startTime" @change="calculateEndTime" />
         </div>
+
         <div class="input-group">
-          <label>Конец</label>
-          <input type="datetime-local" v-model="endTime" />
+          <label>Выберите пакет (длительность)</label>
+          <div class="bundle-selector">
+            <button 
+              v-for="bundle in bundles" 
+              :key="bundle.id"
+              :class="['bundle-btn', { active: selectedBundle?.id === bundle.id }]"
+              @click="selectBundle(bundle)"
+            >
+              {{ bundle.title }} ({{ bundle.duration_hours }}ч)
+            </button>
+          </div>
         </div>
+
+        <div v-if="endTime" class="end-time-info">
+          Окончание: <strong>{{ formatDisplayTime(endTime) }}</strong>
+        </div>
+
         <button class="btn-confirm" @click="handleBooking">Забронировать</button>
       </div>
     </div>
@@ -72,11 +87,60 @@
 import { ref, onMounted, computed } from 'vue' 
 
 const pcs = ref([])
+const bundles = ref([])
 const selectedPc = ref(null)
+const selectedBundle = ref(null)
+
 const startTime = ref('')
 const endTime = ref('')
 const liked = ref(false);
 
+onMounted(async () => {
+  const res = await fetch('http://localhost:3000/api/pcs')
+  pcs.value = await res.json()
+
+  const token = localStorage.getItem('token')
+
+  if (!token) {
+    window.location.href = '/auth'
+    return
+  }
+  const [pcRes, bundleRes] = await Promise.all([
+    fetch('http://localhost:3000/api/pcs'),
+    fetch('http://localhost:3000/api/bundles')
+  ])
+  
+  pcs.value = await pcRes.json()
+  bundles.value = await bundleRes.json()
+
+  const durationQuery = route.query.duration
+  if (durationQuery) {
+    const now = new Date()
+    now.setMinutes(now.getMinutes() - now.getTimezoneOffset())
+    startTime.value = now.toISOString().slice(0, 16)
+    
+    const targetBundle = bundles.value.find(b => b.duration_hours == durationHours)
+    if (targetBundle) selectBundle(targetBundle)
+  }
+})
+
+const selectBundle = (bundle) => {
+  selectedBundle.value = bundle
+  calculateEndTime()
+}
+
+const calculateEndTime = () => {
+  if (!startTime.value || !selectedBundle.value) return;
+
+  const startObj = new Date(startTime.value);
+  const endObj = new Date(startObj.getTime() + (selectedBundle.value.duration_hours * 60 * 60 * 1000));
+
+  const pad = (n) => String(n).padStart(2, '0');
+  const formatted = `${endObj.getFullYear()}-${pad(endObj.getMonth() + 1)}-${pad(endObj.getDate())} ${pad(endObj.getHours())}:${pad(endObj.getMinutes())}:00`;
+  
+  endTime.value = formatted;
+  console.log("Start:", startTime.value, "End Calculated:", endTime.value);
+};
 
 const selectPC = async (pc) => {
   if (pc.status === 'free') {
@@ -128,18 +192,6 @@ async function toggleLike() {
   }
 }
 
-onMounted(async () => {
-  const res = await fetch('http://localhost:3000/api/pcs')
-  pcs.value = await res.json()
-
-  const token = localStorage.getItem('token')
-
-  if (!token) {
-    window.location.href = '/auth'
-    return
-  }
-})
-
 // Группы
 const weakPCs = computed(() => pcs.value.filter(pc => pc.pc_type_id === 1))
 const midPCs = computed(() => pcs.value.filter(pc => pc.pc_type_id === 2))
@@ -182,8 +234,8 @@ const handleBooking = async () => {
     alert('Ошибка соединения с сервером')
   }
 }
-// Допилить,  чтобы менялся статус брони после окончания
-// Сделать Акции, окончательное время по ним
+
+
 </script>
 
 <style src="./bookingsView.css"></style>

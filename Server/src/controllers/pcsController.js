@@ -2,6 +2,22 @@ import { db } from '../config/db.js'
 
 export const getAllPCs = async (req, res) => {
   try {
+    await db.query(`
+      UPDATE bookings 
+      SET status = 'finished' 
+      WHERE status = 'active' AND end_time <= NOW()
+    `);
+
+    await db.query(`
+      UPDATE pcs 
+      SET status = 'free' 
+      WHERE status = 'busy' 
+      AND id NOT IN (
+        SELECT pc_id FROM bookings 
+        WHERE status = 'active' AND NOW() BETWEEN start_time AND end_time
+      )
+    `);
+
     const [rows] = await db.query(
       `SELECT 
          pcs.id,

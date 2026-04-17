@@ -86,3 +86,34 @@ pc-actions button:last-child, .go-book-btn {
   color: white;
   border: 1px solid rgba(255, 255, 255, 0.2);
 }
+
+@media (max-width: 600px) {
+.pc-item {
+    flex-direction: column; 
+    text-align: center;
+    padding: 20px;
+  }
+
+  .pc-image {
+    width: 100%;       
+    height: auto;
+    max-width: 300px;  
+    margin-bottom: 15px;
+  }
+
+  .pc-info {
+    width: 100%;
+    margin-bottom: 20px;
+  }
+
+  .pc-actions {
+    width: 100%;      
+    flex-direction: column; 
+    gap: 10px;
+  }
+
+  .pc-actions button {
+    width: 100%;       
+    padding: 15px;     
+  }
+}

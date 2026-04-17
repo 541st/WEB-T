@@ -1,0 +1,68 @@
+
+.bundle-container {
+  margin-top: 100px;
+  padding: 20px;
+  color: white;
+}
+
+.bundle-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 20px;
+}
+
+.bundle-card {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 16px;
+  overflow: hidden;
+  position: relative;
+  cursor: pointer;
+  backdrop-filter: blur(8px);
+  transition: all 0.3s ease;
+}
+
+.bundle-card:hover {
+  transform: translateY(-5px);
+  border-color: #00ff88;
+  box-shadow: 0 0 20px rgba(0, 255, 136, 0.2);
+}
+
+.bundle-badge {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  background: #00ff88;
+  color: #000;
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-weight: bold;
+  font-size: 0.9rem;
+}
+
+.bundle-img {
+  width: 100%;
+  height: 160px;
+  object-fit: cover;
+}
+
+.bundle-info {
+  padding: 15px;
+}
+
+.bundle-info h3 {
+  color: #00ff88;
+  margin-bottom: 8px;
+}
+
+.bundle-info p {
+  font-size: 0.9rem;
+  opacity: 0.7;
+  margin-bottom: 15px;
+}
+
+.bundle-price {
+  font-size: 1.2rem;
+  font-weight: bold;
+}
+
