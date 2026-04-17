@@ -1,11 +1,76 @@
-.profile {
-  max-width: 600px;
-  margin: 40px auto;
-  text-align: center;
+/* Общие заголовки */
+.title {
+  margin-bottom: 20px;
 }
 
-.logout-btn {
+.user-data {
+  text-align: left;
+  margin-bottom: 30px;
+}
+
+.section-title {
+  text-align: left;
+  font-size: 1.2rem;
   margin-top: 25px;
+  margin-bottom: 15px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  padding-bottom: 5px;
+}
+
+/* Списки (Бронирования и Лайки теперь в одном стиле) */
+.booking-list, .likes-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.booking-item, .like-item {
+  background: rgba(255, 255, 255, 0.1);
+  padding: 12px;
+  border-radius: 8px;
+  margin-bottom: 10px;
+  text-align: left;
+}
+
+.booking-main {
+  display: flex;
+  align-items: center;
+}
+
+.booking-time {
+  font-size: 0.85rem;
+  opacity: 0.7;
+  margin-top: 5px;
+}
+
+.status-dot {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  margin-left: 10px;
+}
+
+.status-dot.active {
+  background: #00ff88; /* Зеленый */
+  box-shadow: 0 0 5px #00ff88;
+}
+
+.status-dot.finished {
+  background: #777; /* Серый */
+}
+
+/* Сообщения */
+.empty-msg {
+  text-align: left;
+  opacity: 0.5;
+  font-size: 0.9rem;
+}
+
+/* Кнопка выхода */
+.logout-btn {
+  display: block;
+  margin-top: 30px;
   padding: 10px 18px;
   background: #ef4444;
   border: none;
@@ -17,17 +82,4 @@
 
 .logout-btn:hover {
   background: #dc2626;
-}
-
-.likes-list {
-  list-style: none;
-  padding: 0;
-  margin: 10px 0 30px;
-}
-
-.like-item {
-  background: rgba(255, 255, 255, 0.1);
-  padding: 12px;
-  border-radius: 8px;
-  margin-bottom: 8px;
 }

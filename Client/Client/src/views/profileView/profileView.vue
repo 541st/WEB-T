@@ -1,21 +1,37 @@
 <template>
   <div class="profile">
-    <h1>Добро пожаловать, {{ user?.name }}!</h1>
-
-    <h2>Ваши бронирования:</h2>
-    <div v-if="bookings.length === 0">
-      Пока нет забронированных ПК
+    <h1 class="title">Личный кабинет</h1>
+    
+    <div class="user-data">
+      <p>Имя: <strong>{{ user?.name }}</strong></p>
+      <p>Email: <strong>{{ user?.email }}</strong></p>
     </div>
-    <h2>Ваши лайки:</h2>
-        <div v-if="likes.length === 0">
-        Вы пока ничего не лайкнули
+
+    <h2 class="section-title">Ваши бронирования</h2>
+    <div v-if="bookings.length === 0" class="empty-msg">
+      У вас пока нет броней.
     </div>
     
-    <ul v-else class="likes-list">
-      <li v-for="like in likes" :key="like.pc_id" class="like-item">
-        <strong>{{ like.type_title }}</strong> — место №{{ like.place_number }}
-      </li>
-    </ul> 
+    <div v-else class="booking-list">
+      <div v-for="b in bookings" :key="b.id" class="booking-item">
+        <div class="booking-main">
+          <strong>Место №{{ b.place_number }}</strong> — {{ b.type_title }}
+          <span :class="['status-dot', b.status]"></span>
+        </div>
+        <div class="booking-time">
+          {{ formatDate(b.start_time) }} — {{ formatDate(b.end_time) }}
+        </div>
+      </div>
+    </div>
+
+    <h2 class="section-title">Ваши лайки</h2>
+    <div v-if="likes.length === 0" class="empty-msg">Пусто</div>
+    
+    <div v-else class="likes-list">
+      <div v-for="like in likes" :key="like.pc_id" class="like-item">
+        ❤️ {{ like.type_title }} (№{{ like.place_number }})
+      </div>
+    </div>
 
     <button class="logout-btn" @click="logout">Выйти</button>
   </div>
@@ -27,6 +43,16 @@ import { ref, onMounted } from 'vue'
 const user = ref(null)
 const bookings = ref([])
 const likes = ref([])
+
+const formatDate = (dateStr) => {
+  const d = new Date(dateStr)
+  return d.toLocaleString('ru-RU', {
+    day: '2-digit',
+    month: 'short',
+    hour: '2-digit',
+    minute: '2-digit'
+  })
+}
 // Пагинацию на лайки(сделать еще)
 async function loadLikes(token) {
   try {

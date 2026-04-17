@@ -2,16 +2,51 @@ import { db } from '../config/db.js'
 
 export const getProfile = async (req, res) => {
   try {
-    const [rows] = await db.query(
+    const userId = req.user.id;
+
+    await db.query(`
+      UPDATE bookings 
+      SET status = 'finished' 
+      WHERE status = 'active' AND end_time <= NOW()
+    `);
+
+    await db.query(`
+      UPDATE pcs 
+      SET status = 'free' 
+      WHERE status = 'busy' 
+      AND id NOT IN (
+        SELECT pc_id FROM bookings 
+        WHERE status = 'active' AND NOW() BETWEEN start_time AND end_time
+      )
+    `);
+
+    const [userRows] = await db.query(
       'SELECT id, email, name FROM users WHERE id = ?',
-      [req.user.id]
+      [userId]
     )
-    res.json({ // категории внутри
-      user: rows[0],
-      bookings: [] 
+
+    const [bookingRows] = await db.query(
+      `SELECT 
+        b.id, 
+        b.status, 
+        p.place_number,
+        pt.title as type_title,
+        DATE_FORMAT(b.start_time, '%Y-%m-%dT%H:%i') as start_time,
+        DATE_FORMAT(b.end_time, '%Y-%m-%dT%H:%i') as end_time
+       FROM bookings b
+       JOIN pcs p ON b.pc_id = p.id
+       JOIN pc_types pt ON p.pc_type_id = pt.id
+       WHERE b.user_id = ?
+       ORDER BY b.start_time DESC`, 
+      [userId]
+    )
+
+    res.json({
+      user: userRows[0],
+      bookings: bookingRows
     })
   } catch (err) {
-    console.error(err)
+    console.error('Ошибка в getProfile:', err)
     res.status(500).json({ message: 'Ошибка сервера' })
   }
 }
