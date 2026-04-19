@@ -70,6 +70,9 @@
             >
               {{ bundle.title }} ({{ bundle.duration_hours }}ч)
             </button>
+            <div v-if="selectedPc.status === 'busy'" class="warning-msg">
+              ⚠️ Этот ПК сейчас занят, но вы можете забронировать его на время после окончания текущей сессии.
+            </div>
           </div>
         </div>
 
@@ -139,7 +142,6 @@ const calculateEndTime = () => {
   const formatted = `${endObj.getFullYear()}-${pad(endObj.getMonth() + 1)}-${pad(endObj.getDate())} ${pad(endObj.getHours())}:${pad(endObj.getMinutes())}:00`;
   
   endTime.value = formatted;
-  console.log("Start:", startTime.value, "End Calculated:", endTime.value);
 };
 
 const selectPC = async (pc) => {
@@ -199,12 +201,14 @@ const strongPCs = computed(() => pcs.value.filter(pc => pc.pc_type_id === 3))
 
 const handleBooking = async () => {
   if (!startTime.value || !endTime.value) {
-    alert('Выберите время!')
+    alert('Выберите время и пакет!')
     return
   }
 
   try {
     const token = localStorage.getItem('token')
+    const formattedStart = startTime.value.replace('T', ' ');
+
     const response = await fetch('http://localhost:3000/api/pcs/book', {
       method: 'POST',
       headers: {
@@ -213,7 +217,7 @@ const handleBooking = async () => {
       },
       body: JSON.stringify({
         pc_id: selectedPc.value.id,
-        start_time: startTime.value,
+        start_time: formattedStart,
         end_time: endTime.value
       })
     })
@@ -223,7 +227,9 @@ const handleBooking = async () => {
     if (response.ok) {
       alert('Бронирование успешно!')
       selectedPc.value = null
-      // Обновляем список ПК, чтобы забронированный стал красным
+      startTime.value = ''
+      endTime.value = ''
+    
       const res = await fetch('http://localhost:3000/api/pcs')
       pcs.value = await res.json()
     } else {

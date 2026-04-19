@@ -164,3 +164,13 @@ input[type="datetime-local"] {
   border-left: 4px solid #00ff88;
   border-radius: 4px;
 }
+
+.warning-msg {
+  background: rgba(255, 165, 0, 0.1);
+  border: 1px solid orange;
+  color: orange;
+  padding: 10px;
+  border-radius: 6px;
+  margin-bottom: 15px;
+  font-size: 0.85rem;
+}

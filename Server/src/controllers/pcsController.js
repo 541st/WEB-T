@@ -46,30 +46,41 @@ export const bookPC = async (req, res) => {
   }
 
   try {
-    // Проверяем, свободен ли ПК
-    const [pcRows] = await db.query(
-      'SELECT status FROM pcs WHERE id = ?',
-      [pc_id]
-    )
-
-    if (pcRows.length === 0) {
-      return res.status(404).json({ message: 'ПК не найден' })
+    const now = new Date()
+    const start = new Date(start_time)
+    // чтобы по секундам не ломало ничего
+    if (start < new Date(now.getTime() - 2 * 60 * 1000)) {
+      return res.status(400).json({ message: 'Нельзя бронировать в прошлом' })
     }
 
-    if (pcRows[0].status === 'busy') {
-      return res.status(400).json({ message: 'ПК уже занят' })
+    const [overlap] = await db.query(
+      `SELECT id FROM bookings 
+       WHERE pc_id = ? 
+       AND status = 'active'
+       AND start_time < ? 
+       AND end_time > ?`,
+      [pc_id, end_time, start_time] 
+    )
+
+    if (overlap.length > 0) {
+      return res.status(400).json({ 
+        message: 'Это время уже занято другой бронью' 
+      })
     }
 
     await db.query(
-      'UPDATE pcs SET status = "busy" WHERE id = ?',
-      [pc_id]
-    )
-
-    await db.query(
-      `INSERT INTO bookings (user_id, pc_id, start_time, end_time, created_at)
-       VALUES (?, ?, ?, ?, NOW())`,
+      `INSERT INTO bookings (user_id, pc_id, start_time, end_time, status, created_at)
+       VALUES (?, ?, ?, ?, 'active', NOW())`,
       [userId, pc_id, start_time, end_time]
     )
+
+    now = new Date();
+    start = new Date(start_time);
+    const end = new Date(end_time);
+
+    if (now >= start && now <= end) {
+      await db.query('UPDATE pcs SET status = "busy" WHERE id = ?', [pc_id]);
+    }
 
     res.json({ message: 'Бронь успешна', booked: true })
   } catch (err) {
@@ -77,4 +88,3 @@ export const bookPC = async (req, res) => {
     res.status(500).json({ message: 'Ошибка сервера при бронировании' })
   }
 }
-
