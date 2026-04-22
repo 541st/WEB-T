@@ -8,6 +8,7 @@ import dotenv from 'dotenv'
 import likesRoutes from './routes/likesRoutes.js'
 import pcsRoutes from './routes/pcsRoutes.js'
 import bundleRoutes from './routes/bundleRoutes.js'
+import tournamentRoutes from './routes/tournamentRoutes.js'
 
 const app = express()
 app.use(cors())
@@ -26,6 +27,8 @@ app.use('/api/likes', likesRoutes)
 app.use('/api/pcs', pcsRoutes)
 // Акции
 app.use('/api/bundles', bundleRoutes)
+// Турниры
+app.use('/api/tournaments', tournamentRoutes)
 
 
 app.listen(3000, () => {

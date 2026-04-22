@@ -5,7 +5,9 @@
     <div class="background"></div>
 
     <main class="content">
-      <div :class="['center-box', { 'no-center': $route.name === 'catalog' }]">
+      <div :class="['center-box', { 
+        'no-center': $route.name === 'catalog' || $route.name === 'tournament'
+      }]">
           <slot />
       </div>
     </main>

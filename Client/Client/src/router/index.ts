@@ -32,6 +32,11 @@ const router = createRouter({
       path: '/bundle',
       name: 'bundle',
       component: () => import('../views/bundleView/bundleView.vue')
+    },
+        {
+      path: '/tournament',
+      name: 'tournament',
+      component: () => import('../views/tournamentView/tournamentView.vue')
     }
   ]
 })

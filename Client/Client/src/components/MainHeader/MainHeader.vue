@@ -4,6 +4,7 @@
         <a href="/" class = "logo"><img src="../../../Pictures/pngwingcom_negate.png" class="logo-IMG"></a>
 
             <div class="menu">
+                <router-link to="/tournament">Турниры</router-link>
                 <router-link to="/bundle">Акции</router-link>
                 <router-link to="/catalog">Каталог</router-link>
                 <router-link to="/booking">Забронировать</router-link>
