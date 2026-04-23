@@ -2,11 +2,12 @@
   <div class="catalog">
     <h1 class="title">Каталог ПК</h1>
 
-    <div v-if="pcTypes.length === 0" class="loading">
-      Загрузка списка ПК...
+    <div v-if="isLoading" class="loader-container">
+      <div class="spinner"></div>
+      <p>Загружаем конфигурации...</p>
     </div>
 
-    <div v-else class="pc-list">
+    <div v-else-if="pcTypes.length > 0" class="pc-list">
       <div 
         v-for="type in pcTypes" 
         :key="type.id" 
@@ -31,6 +32,10 @@
         </div>
       </div>
     </div>
+
+    <div v-else class="empty-list">
+      В данный момент нет доступных ПК.
+    </div>
   </div>
 </template>
 
@@ -40,11 +45,21 @@ import { useRouter } from 'vue-router'
 
 const router = useRouter()
 const pcTypes = ref([])
+const isLoading = ref(true) 
 
 onMounted(async () => {
-  const response = await fetch('http://localhost:3000/api/computers')
-  const data = await response.json()
-  pcTypes.value = data
+  try {
+    isLoading.value = true
+    const response = await fetch('http://localhost:3000/api/computers')
+    const data = await response.json()
+    pcTypes.value = data
+  } catch (error) {
+    console.error("Ошибка загрузки ПК:", error)
+  } finally {
+    setTimeout(() => {
+      isLoading.value = false
+    }, 600)
+  }
 })
 
 function goToDetails(id) {
@@ -57,3 +72,4 @@ function goToBooking(id) {
 </script>
 
 <style src="./catalogView.css"></style>
+

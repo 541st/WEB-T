@@ -53,6 +53,7 @@
 
 <script setup>
 import { ref, onMounted } from 'vue'
+import { notify } from '@/components/notifier'
 
 const user = ref(null)
 const bookings = ref([])
@@ -130,7 +131,7 @@ async function loadLikes() {
 onMounted(async () => {
   const token = localStorage.getItem('token')
   if (!token) {
-    alert('Вы не авторизованы')
+    notify.info("Вы не авторизованы");
     window.location.href = '/auth'
     return
   }

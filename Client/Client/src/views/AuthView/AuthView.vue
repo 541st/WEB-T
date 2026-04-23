@@ -119,6 +119,7 @@
 
 <script setup>
 import { onMounted, ref } from 'vue'
+import { notify } from '@/components/notifier'
 
 const mode = ref('login') // login | register | reset
 
@@ -152,11 +153,11 @@ const submit = async () => {
     const data = await response.json()
 
     if (!response.ok) {
-      alert(data.message || 'Ошибка входа')
+      notify.error("Ошибка входа");
       return
     }
 
-    alert('Успешный вход!')
+    notify.success("Успешный вход!");
     localStorage.setItem('token', data.token)
     window.location.href = '/profile'
 
@@ -166,11 +167,11 @@ const submit = async () => {
 
   } catch (err) {
     console.error(err)
-    alert('Ошибка соединения с сервером')
+    notify.error("Ошибка соединения с сервером");
   }
   } else if (mode.value === 'register') {
   if (password.value !== passwordConfirm.value) {
-    alert('Пароли не совпадают')
+    notify.error("Пароли не совпадают");
     return
   }
 
@@ -189,20 +190,20 @@ const submit = async () => {
     const data = await response.json()
 
     if (!response.ok) {
-      alert(data.message || 'Ошибка регистрации')
+      notify.error("Ошибка регистрации");
       return
     }
 
-    alert('Регистрация успешна!')
+    notify.success("Успешная регистрация!");
     mode.value = 'login' 
 
   } catch (err) {
     console.error(err)
-    alert('Ошибка соединения с сервером')
+    notify.error("Ошибка соединения с сервером");
   }
 } else {
 if (!email.value || !keyword.value || !newPassword.value) {
-      alert('Заполните email, кодовое слово и новый пароль')
+      notify.error("Заполните все данные!");
       return
     }
 
@@ -220,16 +221,16 @@ if (!email.value || !keyword.value || !newPassword.value) {
       const data = await response.json()
 
       if (!response.ok) {
-        alert(data.message || 'Ошибка при сбросе пароля')
+        notify.error("Ошибка при сбросе пароля");
         return
       }
 
-      alert('Пароль успешно изменен! Теперь вы можете войти.')
+      notify.success("Пароль успешно изменен!");
       mode.value = 'login' 
 
     } catch (err) {
       console.error(err)
-      alert('Ошибка соединения с сервером')
+      notify.error("Ошибка соединения с сервером");
     }
   }
 }

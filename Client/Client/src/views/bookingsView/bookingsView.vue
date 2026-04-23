@@ -88,6 +88,7 @@
 
 <script setup>
 import { ref, onMounted, computed } from 'vue' 
+import { notify } from '@/components/notifier'
 
 const pcs = ref([])
 const bundles = ref([])
@@ -169,7 +170,7 @@ async function checkLikeStatus(pcId) {
 async function toggleLike() {
   const token = localStorage.getItem('token')
   if (!token) {
-    alert('Авторизуйтесь, чтобы лайкать')
+      notify.error("Авторизуйтесь,  чтобы лайкать");
     return
   }
 
@@ -201,7 +202,7 @@ const strongPCs = computed(() => pcs.value.filter(pc => pc.pc_type_id === 3))
 
 const handleBooking = async () => {
   if (!startTime.value || !endTime.value) {
-    alert('Выберите время и пакет!')
+    notify.info("Выберите время и пакет");
     return
   }
 
@@ -225,7 +226,7 @@ const handleBooking = async () => {
     const data = await response.json()
 
     if (response.ok) {
-      alert('Бронирование успешно!')
+      notify.success("Успешное бронирование!");
       selectedPc.value = null
       startTime.value = ''
       endTime.value = ''
@@ -233,11 +234,11 @@ const handleBooking = async () => {
       const res = await fetch('http://localhost:3000/api/pcs')
       pcs.value = await res.json()
     } else {
-      alert(data.message || 'Ошибка при бронировании')
+      notify.error("Ошибка при бронировании");
     }
   } catch (err) {
     console.error(err)
-    alert('Ошибка соединения с сервером')
+    notify.error("Ошибка с сервером");
   }
 }
 

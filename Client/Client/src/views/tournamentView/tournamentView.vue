@@ -86,7 +86,15 @@ async function fetchTournaments() {
   tournaments.value = await res.json()
 }
 
-onMounted(fetchTournaments)
+onMounted(async () => {
+  const token = localStorage.getItem('token')
+  if (!token) {
+    notify.info("Вы не авторизованы");
+    window.location.href = '/auth'
+    return
+  }
+  await fetchTournaments()
+})
 </script>
 
 <style src="./tournamentView.css"></style>
