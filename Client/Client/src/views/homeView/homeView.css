@@ -1,0 +1,75 @@
+.pc-page {
+  display: flex;
+  flex-direction: column;
+  gap: 80px;
+}
+
+/* Блок */
+.pc-section {
+  position: relative; /* ВАЖНО: чтобы ленточка могла вылазить */
+}
+
+/* ЛЕНТОЧКА */
+.pc-ribbon {
+  position: absolute;
+  top: -20px; /* поднимаем над коробкой */
+  padding: 12px 30px;
+  width: 320px;
+  color: white;
+  font-weight: bold;
+  z-index: 5;
+  clip-path: polygon(0 0, 100% 0, 90% 100%, 0 100%);
+}
+
+.pc-ribbon.blue { background: #007bff; }
+.pc-ribbon.red  { background: #dc3545; }
+
+/* ЛЕНТОЧКА СПРАВА */
+.pc-section.right .pc-ribbon {
+  right: -20px; /* вылазит за правый край */
+  clip-path: polygon(10% 0, 100% 0, 100% 100%, 0 100%);
+}
+
+/* ЛЕНТОЧКА СЛЕВА */
+.pc-section.left .pc-ribbon {
+  left: -20px; /* вылазит за левый край */
+}
+
+/* КОНТЕНТ */
+.pc-content {
+  margin-top: 40px; /* чтобы ленточка не перекрывала */
+  display: flex;
+  background: rgba(0,0,0,0.55);
+  border: 1px solid rgba(255,255,255,0.1);
+  padding: 30px;
+  gap: 30px;
+  align-items: center;
+  border-radius: 16px;
+  width: 100%; /* растягиваем как .no-center */
+  box-sizing: border-box;
+}
+
+/* Чередование сторон */
+.pc-section.right .pc-content {
+  flex-direction: row-reverse;
+}
+
+/* Текст */
+.pc-text {
+  flex: 1;
+}
+
+.pc-price {
+  margin-top: 10px;
+  font-size: 1.6rem;
+  color: #00ff88;
+  font-weight: bold;
+}
+
+/* Картинка */
+.pc-image {
+  width: 340px;
+  height: 200px;
+  object-fit: cover;
+  border-radius: 12px;
+}

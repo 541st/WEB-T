@@ -3,6 +3,11 @@ import { createRouter, createWebHistory } from 'vue-router'
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
+        {
+      path: '/',
+      name: 'home',
+      component: () => import('../views/homeView/homeView.vue')
+    },
     {
       path: '/auth',
       name: 'auth', 
@@ -33,7 +38,7 @@ const router = createRouter({
       name: 'bundle',
       component: () => import('../views/bundleView/bundleView.vue')
     },
-        {
+    {
       path: '/tournament',
       name: 'tournament',
       component: () => import('../views/tournamentView/tournamentView.vue')

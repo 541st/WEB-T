@@ -46,8 +46,8 @@ export const bookPC = async (req, res) => {
   }
 
   try {
-    const now = new Date()
-    const start = new Date(start_time)
+    let now = new Date()
+    let start = new Date(start_time)
     // чтобы по секундам не ломало ничего
     if (start < new Date(now.getTime() - 2 * 60 * 1000)) {
       return res.status(400).json({ message: 'Нельзя бронировать в прошлом' })
