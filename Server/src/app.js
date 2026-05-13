@@ -11,7 +11,10 @@ import bundleRoutes from './routes/bundleRoutes.js'
 import tournamentRoutes from './routes/tournamentRoutes.js'
 
 const app = express()
-app.use(cors())
+app.use(cors({
+  origin: '*', 
+  credentials: true
+}));
 dotenv.config({ path: './.env' })
 
 app.use(express.json())
@@ -29,7 +32,6 @@ app.use('/api/pcs', pcsRoutes)
 app.use('/api/bundles', bundleRoutes)
 // Турниры
 app.use('/api/tournaments', tournamentRoutes)
-
 
 app.listen(3000, () => {
   console.log('Server running on http://localhost:3000')
