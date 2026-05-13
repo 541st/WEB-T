@@ -179,22 +179,53 @@
   }
 }
 
-@media (max-width: 480px) {
+@media (max-width: 600px) {
+  .tournament-list {
+    display: flex;
+    flex-direction: column; 
+    overflow-x: visible; 
+    gap: 15px;
+    padding-bottom: 0;
+  }
+
   .tournament-row-card {
-    width: 280px;
+
+    width: 100%; 
+    min-height: 140px; 
   }
-  
-  .row-right {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 8px;
+
+  .row-content {
+    min-height: 140px;
+    padding: 12px;
   }
-  
-  .prize-info {
-    text-align: left;
-  }
-  
+
   .row-desc {
-    -webkit-line-clamp: 1;
+    display: none; 
+  }
+
+  .row-left h3 {
+    font-size: 0.95rem;
+    margin: 4px 0;
+  }
+
+  .row-right {
+    flex-direction: row; 
+    align-items: center;
+    padding-top: 8px;
+  }
+
+  .date-info .value {
+    font-size: 0.7rem;
+  }
+
+  .bundle-price {
+    font-size: 0.9rem;
+  }
+
+  .bundle-badge {
+    top: 8px;
+    right: 8px;
+    padding: 2px 8px;
+    font-size: 0.65rem;
   }
 }
