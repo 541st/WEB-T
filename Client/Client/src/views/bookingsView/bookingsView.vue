@@ -89,6 +89,9 @@
 <script setup>
 import { ref, onMounted, computed } from 'vue' 
 import { notify } from '@/components/notifier'
+import { useRoute } from 'vue-router'
+
+const route = useRoute()
 
 const pcs = ref([])
 const bundles = ref([])
@@ -98,6 +101,17 @@ const selectedBundle = ref(null)
 const startTime = ref('')
 const endTime = ref('')
 const liked = ref(false);
+
+const formatDisplayTime = (dateStr) => {
+  if (!dateStr) return ''
+  const date = new Date(dateStr)
+  return date.toLocaleString('ru-RU', {
+    day: '2-digit',
+    month: '2-digit',
+    hour: '2-digit',
+    minute: '2-digit'
+  })
+}
 
 onMounted(async () => {
   const res = await fetch('http://localhost:3000/api/pcs')
