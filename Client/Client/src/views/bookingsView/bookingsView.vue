@@ -80,7 +80,7 @@
           Окончание: <strong>{{ formatDisplayTime(endTime) }}</strong>
         </div>
 
-        <button class="btn-confirm" @click="handleBooking">Забронировать</button>
+        <button class="btn-confirm" @click="handleBooking" :disabled="isPending">{{ isPending ? 'Оформление...' : 'Забронировать' }}</button>
       </div>
     </div>
   </div>
@@ -200,11 +200,16 @@ const weakPCs = computed(() => pcs.value.filter(pc => pc.pc_type_id === 1))
 const midPCs = computed(() => pcs.value.filter(pc => pc.pc_type_id === 2))
 const strongPCs = computed(() => pcs.value.filter(pc => pc.pc_type_id === 3))
 
+const isPending = ref(false)
+
 const handleBooking = async () => {
-  if (!startTime.value || !endTime.value) {
+  if (!startTime.value || !selectedBundle.value) {
     notify.info("Выберите время и пакет");
     return
   }
+
+  if (isPending.value) return; 
+  isPending.value = true;
 
   try {
     const token = localStorage.getItem('token')
@@ -230,15 +235,23 @@ const handleBooking = async () => {
       selectedPc.value = null
       startTime.value = ''
       endTime.value = ''
-    
+      
       const res = await fetch('http://localhost:3000/api/pcs')
       pcs.value = await res.json()
     } else {
-      notify.error("Ошибка при бронировании");
+      notify.error(data.message || "Ошибка при бронировании");
+      
+      const res = await fetch('http://localhost:3000/api/pcs')
+      pcs.value = await res.json()
+      setTimeout(() => {
+      window.location.reload();
+      }, 2000);
     }
   } catch (err) {
     console.error(err)
-    notify.error("Ошибка с сервером");
+    notify.error("Ошибка соединения с сервером");
+  } finally {
+    isPending.value = false; 
   }
 }
 

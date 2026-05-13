@@ -26,6 +26,7 @@
   border-radius: 10px;
   border: 1px solid #333;
   cursor: pointer;
+  transition: 0.2s;
 }
 
 .pc-item:hover {
@@ -35,37 +36,35 @@
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
 }
 
-.status-btn {
-  padding: 8px 14px;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-  background: #3b82f6;
-  color: white;
-  font-weight: 500;
-}
-
-.status-btn:hover {
-  background: #2563eb;
-}
-
-.pc-details {
-  margin-top: 30px;
-  padding: 20px;
-  background: rgba(0,0,0,0.6);
-  border-radius: 12px;
-  border: 1px solid #444;
-}
-
 .pc-image {
-  width: 150px; 
+  width: 150px;
   height: 100px;
   object-fit: cover;
   border-radius: 10px;
   border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-button {
+.pc-info {
+  flex: 1;
+}
+
+.specs {
+  opacity: 0.7;
+  margin: 5px 0;
+}
+
+.price {
+  font-weight: bold;
+  color: #00ff88;
+  margin-top: 5px;
+}
+
+.pc-actions {
+  display: flex;
+  gap: 10px; 
+}
+
+.pc-actions button {
   padding: 10px 18px;
   border-radius: 8px;
   border: none;
@@ -76,76 +75,39 @@ button {
   font-size: 0.8rem;
 }
 
-pc-actions button:last-child, .go-book-btn {
-  background: #00ff88;
-  color: #000;
-}
-
 .pc-actions button:first-child {
   background: rgba(255, 255, 255, 0.1);
   color: white;
   border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
-@media (max-width: 600px) {
-.pc-item {
-    flex-direction: column; 
-    text-align: center;
-    padding: 20px;
-  }
-
-  .pc-image {
-    width: 100%;       
-    height: auto;
-    max-width: 300px;  
-    margin-bottom: 15px;
-  }
-
-  .pc-info {
-    width: 100%;
-    margin-bottom: 20px;
-  }
-
-  .pc-actions {
-    width: 100%;      
-    flex-direction: column; 
-    gap: 10px;
-  }
-
-  .pc-actions button {
-    width: 100%;       
-    padding: 15px;     
-  }
+.pc-actions button:last-child {
+  background: #00ff88;
+  color: #000;
 }
 
-/* Контейнер загрузки */
 .loader-container {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   min-height: 300px;
-  color: #00ff88; 
-  font-family: sans-serif;
+  color: #00ff88;
   gap: 15px;
 }
 
 .spinner {
   width: 50px;
   height: 50px;
-  border: 4px solid rgba(255, 255, 255, 0.1); 
-  border-left-color: #00ff88; 
+  border: 4px solid rgba(255, 255, 255, 0.1);
+  border-left-color: #00ff88;
   border-radius: 50%;
   animation: spin 0.8s linear infinite;
 }
 
 @keyframes spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
 }
 
 .empty-list {
@@ -153,4 +115,55 @@ pc-actions button:last-child, .go-book-btn {
   color: white;
   opacity: 0.6;
   margin-top: 50px;
+}
+
+@media (max-width: 600px) {
+
+  .pc-item {
+    flex-direction: row;
+    align-items: center;
+    padding: 10px 12px;
+    gap: 10px;
+    min-height: 70px;
+  }
+
+  .pc-image {
+    width: 70px;
+    height: 50px;
+    border-radius: 6px;
+    margin: 0;
+  }
+
+  .pc-info {
+    flex: 1;
+    margin: 0;
+    text-align: left;
+  }
+
+  .pc-info h2 {
+    font-size: 0.9rem;
+    margin-bottom: 3px;
+  }
+
+  .specs {
+    display: none;
+  }
+
+  .price {
+    font-size: 0.85rem;
+    margin-top: 0;
+  }
+
+  .pc-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+.pc-actions button {
+  white-space: nowrap;      /* текст не переносится */
+  min-width: 90px;          /* кнопка не станет слишком маленькой */
+  text-align: center;
+}
+
 }

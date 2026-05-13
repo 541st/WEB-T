@@ -18,6 +18,7 @@
 .content {
     display: flex;
     justify-content: center;
+    align-items: flex-start;
     min-height: calc(100vh - 60px); /* чтобы было под шапкой */
     padding-top: 60px;
     box-sizing: border-box;
@@ -33,10 +34,15 @@
   box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
 }
 
+.center-box > :first-child,
+.no-center > :first-child {
+  margin-top: 0;
+}
+
 .no-center {
   width: 100%;
   max-width: 900px;
-  margin-top: 120px; 
+  margin-top: 40px; 
   background: rgba(0, 0, 0, 0.55);
   padding: 40px;
   border-radius: 16px;

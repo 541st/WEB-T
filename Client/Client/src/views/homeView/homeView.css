@@ -4,15 +4,15 @@
   gap: 80px;
 }
 
-/* Блок */
+
 .pc-section {
-  position: relative; /* ВАЖНО: чтобы ленточка могла вылазить */
+  position: relative; 
 }
 
-/* ЛЕНТОЧКА */
+
 .pc-ribbon {
   position: absolute;
-  top: -20px; /* поднимаем над коробкой */
+  top: -20px; 
   padding: 12px 30px;
   width: 320px;
   color: white;
@@ -24,20 +24,17 @@
 .pc-ribbon.blue { background: #007bff; }
 .pc-ribbon.red  { background: #dc3545; }
 
-/* ЛЕНТОЧКА СПРАВА */
 .pc-section.right .pc-ribbon {
-  right: -20px; /* вылазит за правый край */
+  right: -20px; 
   clip-path: polygon(10% 0, 100% 0, 100% 100%, 0 100%);
 }
 
-/* ЛЕНТОЧКА СЛЕВА */
 .pc-section.left .pc-ribbon {
-  left: -20px; /* вылазит за левый край */
+  left: -20px; 
 }
 
-/* КОНТЕНТ */
 .pc-content {
-  margin-top: 40px; /* чтобы ленточка не перекрывала */
+  margin-top: 40px; 
   display: flex;
   background: rgba(0,0,0,0.55);
   border: 1px solid rgba(255,255,255,0.1);
@@ -45,16 +42,14 @@
   gap: 30px;
   align-items: center;
   border-radius: 16px;
-  width: 100%; /* растягиваем как .no-center */
+  width: 100%; 
   box-sizing: border-box;
 }
 
-/* Чередование сторон */
 .pc-section.right .pc-content {
   flex-direction: row-reverse;
 }
 
-/* Текст */
 .pc-text {
   flex: 1;
 }
@@ -66,10 +61,50 @@
   font-weight: bold;
 }
 
-/* Картинка */
 .pc-image {
   width: 340px;
   height: 200px;
   object-fit: cover;
   border-radius: 12px;
+}
+
+@media (max-width: 600px) {
+
+
+  .pc-content {
+    margin-top: 60px !important; 
+    flex-direction: column !important;
+    padding: 20px;
+    gap: 15px;
+  }
+
+
+  .pc-ribbon {
+    left: 50% !important;
+    right: auto !important;
+    transform: translateX(-50%);
+    top: -30px; 
+    padding: 8px 18px;
+    font-size: 0.9rem;
+    clip-path: none;
+    border-radius: 8px;
+    width: auto;
+    max-width: 90%;
+    text-align: center;
+  }
+
+  .pc-image {
+    width: 100%;
+    height: auto;
+    max-height: 200px;
+    object-fit: cover;
+  }
+
+  .pc-text {
+    text-align: center;
+  }
+
+  .pc-price {
+    font-size: 1.3rem;
+  }
 }

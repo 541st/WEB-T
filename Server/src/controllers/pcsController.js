@@ -45,30 +45,41 @@ export const bookPC = async (req, res) => {
     return res.status(400).json({ message: 'Не хватает данных' })
   }
 
+  // Получаем отдельное соединение из пула для работы с транзакцией
+  const connection = await db.getConnection();
+
   try {
+    await connection.beginTransaction();
+
     let now = new Date()
     let start = new Date(start_time)
-    // чтобы по секундам не ломало ничего
+    
+    // Проверка на бронирование в прошлом
     if (start < new Date(now.getTime() - 2 * 60 * 1000)) {
+      await connection.rollback();
+      connection.release();
       return res.status(400).json({ message: 'Нельзя бронировать в прошлом' })
     }
 
-    const [overlap] = await db.query(
+    const [overlap] = await connection.query(
       `SELECT id FROM bookings 
        WHERE pc_id = ? 
        AND status = 'active'
        AND start_time < ? 
-       AND end_time > ?`,
+       AND end_time > ?
+       FOR UPDATE`,
       [pc_id, end_time, start_time] 
     )
 
     if (overlap.length > 0) {
-      return res.status(400).json({ 
-        message: 'Это время уже занято другой бронью' 
+      await connection.rollback();
+      connection.release();
+      return res.status(409).json({ 
+        message: 'Это время уже занято другой бронью. Пожалуйста, выберите другое время.' 
       })
     }
 
-    await db.query(
+    await connection.query(
       `INSERT INTO bookings (user_id, pc_id, start_time, end_time, status, created_at)
        VALUES (?, ?, ?, ?, 'active', NOW())`,
       [userId, pc_id, start_time, end_time]
@@ -79,12 +90,17 @@ export const bookPC = async (req, res) => {
     const end = new Date(end_time);
 
     if (now >= start && now <= end) {
-      await db.query('UPDATE pcs SET status = "busy" WHERE id = ?', [pc_id]);
+      await connection.query('UPDATE pcs SET status = "busy" WHERE id = ?', [pc_id]);
     }
 
+    await connection.commit();
+    
     res.json({ message: 'Бронь успешна', booked: true })
   } catch (err) {
-    console.error(err)
+    await connection.rollback();
+    console.error('Ошибка при транзакции бронирования:', err)
     res.status(500).json({ message: 'Ошибка сервера при бронировании' })
+  } finally {
+    connection.release();
   }
 }
