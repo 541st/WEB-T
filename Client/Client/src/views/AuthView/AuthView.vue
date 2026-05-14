@@ -31,71 +31,82 @@
       }}
     </h1>
 
-    <form @submit.prevent="submit" class="form">
+<form @submit.prevent="submit" class="form">
+  <input 
+    v-model="email" 
+    type="email" 
+    placeholder="Email" 
+    @blur="fetchQuestion"
+    required 
+  />
+  
+  <input
+    v-if="mode === 'register'"
+    v-model="name"
+    type="text"
+    placeholder="Имя"
+    required
+  />
 
-      <input v-model="email" type="email" placeholder="Email" />
-      <input
-        v-if="mode === 'register'"
-        v-model="name"
-        type="text"
-        placeholder="Имя"
-      />
+  <select 
+    v-if="mode === 'register'" 
+    v-model="securityQuestion" 
+    class="auth-select"
+    required
+  >
+    <option value="" disabled selected>Выберите секретный вопрос</option>
+    <option value="Имя вашего первого питомца">Имя вашего первого питомца</option>
+    <option value="Девичья фамилия матери">Девичья фамилия матери</option>
+    <option value="Ваш любимый город">Ваш любимый город</option>
+  </select>
 
-      <!-- Авторизация -->
-      <input
-        v-if="mode === 'login'"
-        v-model="password"
-        type="password"
-        placeholder="Пароль"
-      />
+  <div v-if="mode === 'reset' && userQuestion" class="reset-info">
+    <p class="hint-text">Ваш секретный вопрос:</p>
+    <div class="user-question-box">{{ userQuestion }}</div>
+  </div>
 
-      <!-- Регистрация -->
-      <input
-        v-if="mode === 'register'"
-        v-model="password"
-        type="password"
-        placeholder="Пароль"
-      />
+  <input
+    v-if="mode === 'login' || mode === 'register'"
+    v-model="password"
+    type="password"
+    placeholder="Пароль"
+    required
+  />
 
-      <input
-        v-if="mode === 'register'"
-        v-model="passwordConfirm"
-        type="password"
-        placeholder="Подтверждение пароля"
-      />
+  <input
+    v-if="mode === 'register'"
+    v-model="passwordConfirm"
+    type="password"
+    placeholder="Подтверждение пароля"
+    required
+  />
 
-      <input
-        v-if="mode === 'register'"
-        v-model="keyword"
-        type="text"
-        placeholder="Секретное слово"
-      />
+  <input
+    v-if="mode === 'register' || mode === 'reset'"
+    v-model="keyword"
+    type="text"
+    :placeholder="mode === 'register' ? 'Ответ на секретный вопрос' : 'Введите ваш ответ'"
+    required
+  /> 
 
-      <!-- Восстановление пароля -->
-      <input
-        v-if="mode === 'reset'"
-        v-model="keyword"
-        type="text"
-        placeholder="Секретное слово"
-      />
+  <input
+    v-if="mode === 'reset'"
+    v-model="newPassword"
+    type="password"
+    placeholder="Новый пароль"
+    required
+  />
 
-      <input
-        v-if="mode === 'reset'"
-        v-model="newPassword"
-        type="password"
-        placeholder="Новый пароль"
-      />
-
-      <button class="main-btn">
-        {{
-          mode === 'login'
-            ? 'Войти'
-            : mode === 'register'
-            ? 'Зарегистрироваться'
-            : 'Сменить пароль'
-        }}
-      </button>
-    </form>
+  <button type="submit" class="main-btn">
+    {{
+      mode === 'login'
+        ? 'Войти'
+        : mode === 'register'
+        ? 'Зарегистрироваться'
+        : 'Сменить пароль'
+    }}
+  </button>
+</form>
 
     <!-- Забыл пароль -->
     <div
@@ -133,6 +144,7 @@ const password = ref('')
 const passwordConfirm = ref('')
 const keyword = ref('')
 const newPassword = ref('')
+const securityQuestion = ref('')
 
 onMounted(() => {
   const token = localStorage.getItem('token')
@@ -142,6 +154,42 @@ onMounted(() => {
   }
 })
 
+const userQuestion = ref('') 
+
+const fetchQuestion = async () => {
+
+  if (mode.value !== 'reset' || !email.value.includes('@')) return
+
+  try {
+    const response = await fetch('http://localhost:3000/api/auth/get-question', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email: email.value })
+    })
+
+    const data = await response.json()
+
+    if (response.ok) {
+      userQuestion.value = data.question
+    } else {
+      userQuestion.value = ''
+    }
+  } catch (err) {
+    console.error("Ошибка при получении вопроса:", err)
+  }
+}
+
+const validatePassword = (pw) => {
+  const minLength = 8
+  const hasUpperCase = /[A-Z]/.test(pw)
+  const hasNumber = /[0-9]/.test(pw)
+
+  if (pw.length < minLength) return "Пароль должен быть не менее 8 символов"
+  if (!hasUpperCase) return "Пароль должен содержать хотя бы одну заглавную букву"
+  if (!hasNumber) return "Пароль должен содержать хотя бы одну цифру"
+  
+  return null
+}
 const submit = async () => {
   if (mode.value === 'login') {
       try {
@@ -171,9 +219,15 @@ const submit = async () => {
     notify.error("Ошибка соединения с сервером");
   }
   } else if (mode.value === 'register') {
-  if (password.value !== passwordConfirm.value) {
-    notify.error("Пароли не совпадают");
-    return
+    const passwordError = validatePassword(password.value)
+      if (passwordError) {
+        notify.error(passwordError)
+        return
+      }
+
+      if (password.value !== passwordConfirm.value) {
+        notify.error("Пароли не совпадают");
+        return
   }
 
   try {
@@ -184,7 +238,8 @@ const submit = async () => {
         email: email.value,
         password: password.value,
         name: name.value,
-        keyword: keyword.value
+        keyword: keyword.value,
+        security_question: securityQuestion.value
       })
     })
 
@@ -207,6 +262,9 @@ if (!email.value || !keyword.value || !newPassword.value) {
       notify.error("Заполните все данные!");
       return
     }
+
+    const pwError = validatePassword(newPassword.value)
+    if (pwError) { return notify.error(pwError) }
 
     try {
       const response = await fetch('http://localhost:3000/api/auth/reset-password', {

@@ -4,13 +4,12 @@ import jwt from 'jsonwebtoken'
 
 export const register = async (req, res) => {
   try {
-    const { email, password, name, keyword } = req.body
+    const { email, password, name, keyword, security_question } = req.body
 
-    if (!email || !password || !name || !keyword) {
+    if (!email || !password || !name || !keyword || !security_question) {
       return res.status(400).json({ message: 'Заполните все поля' })
     }
 
-    // есть ли юзер
     const [existing] = await db.query(
       'SELECT id FROM users WHERE email = ?',
       [email]
@@ -23,11 +22,10 @@ export const register = async (req, res) => {
     const passwordHash = await bcrypt.hash(password, 10)
     const keywordHash = await bcrypt.hash(keyword, 10)
 
-    // + в таблицу
     await db.query(
-      `INSERT INTO users (email, password_hash, keyword, name, created_at)
-       VALUES (?, ?, ?, ?, NOW())`,
-      [email, passwordHash, keywordHash, name]
+      `INSERT INTO users (email, password_hash, keyword, security_question, name, created_at)
+       VALUES (?, ?, ?, ?, ?, NOW())`,
+      [email, passwordHash, keywordHash, security_question, name]
     )
 
     res.status(201).json({ message: 'Регистрация успешна' })
@@ -45,11 +43,7 @@ export const login = async (req, res) => {
       return res.status(400).json({ message: 'Заполните все поля' })
     }
 
-    // Ищем юзера
-    const [rows] = await db.query(
-      'SELECT * FROM users WHERE email = ?',
-      [email]
-    )
+    const [rows] = await db.query('SELECT * FROM users WHERE email = ?', [email])
 
     if (rows.length === 0) {
       return res.status(400).json({ message: 'Неверный email или пароль' })
@@ -62,7 +56,6 @@ export const login = async (req, res) => {
       return res.status(400).json({ message: 'Неверный email или пароль' })
     }
 
-    // Создаём токен
     const token = jwt.sign(
       { id: user.id, email: user.email },
       process.env.JWT_SECRET || 'secret123',
@@ -72,13 +65,29 @@ export const login = async (req, res) => {
     res.json({
       message: 'Успешный вход',
       token,
-      user: {
-        id: user.id,
-        email: user.email,
-        name: user.name
-      }
+      user: { id: user.id, email: user.email, name: user.name }
     })
+  } catch (err) {
+    console.error(err)
+    res.status(500).json({ message: 'Ошибка сервера' })
+  }
+}
 
+// Новая функция теперь стоит отдельно!
+export const getSecurityQuestion = async (req, res) => {
+  try {
+    const { email } = req.body
+    
+    const [rows] = await db.query(
+      'SELECT security_question FROM users WHERE email = ?', 
+      [email]
+    )
+
+    if (rows.length === 0) {
+      return res.status(404).json({ message: 'Пользователь не найден' })
+    }
+
+    res.json({ question: rows[0].security_question })
   } catch (err) {
     console.error(err)
     res.status(500).json({ message: 'Ошибка сервера' })
@@ -94,17 +103,13 @@ export const resetPassword = async (req, res) => {
     }
 
     const [rows] = await db.query('SELECT * FROM users WHERE email = ?', [email])
-    
-    if (rows.length === 0) {
-      return res.status(404).json({ message: 'Пользователь не найден' })
-    }
+    if (rows.length === 0) return res.status(404).json({ message: 'Пользователь не найден' })
 
     const user = rows[0]
 
     const isKeywordMatch = await bcrypt.compare(keyword, user.keyword)
-
     if (!isKeywordMatch) {
-      return res.status(401).json({ message: 'Неверное кодовое слово' })
+      return res.status(401).json({ message: 'Неверный ответ на секретный вопрос' })
     }
 
     const newPasswordHash = await bcrypt.hash(newPassword, 10)
