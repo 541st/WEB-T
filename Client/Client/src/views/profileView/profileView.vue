@@ -144,7 +144,12 @@ onMounted(async () => {
 
 function logout() {
   localStorage.removeItem('token')
-  router.push('/auth')
+  profileData.value = null
+  router.push('/auth').then(() => {
+    window.location.reload() 
+  })
+
+  notify.success("Вы вышли из системы")
 }
 
 </script>
