@@ -122,7 +122,7 @@ import { onMounted, ref } from 'vue'
 import { notify } from '@/components/notifier'
 import { useRouter } from 'vue-router'
 
-const router = useRouter
+const router = useRouter()
 
 const mode = ref('login') // login | register | reset
 
@@ -163,10 +163,6 @@ const submit = async () => {
     notify.success("Успешный вход!");
     localStorage.setItem('token', data.token)
     router.push('/profile')
-
-    // Сохраняем токен
-    localStorage.setItem('token', data.token)
-
 
   } catch (err) {
     console.error(err)
