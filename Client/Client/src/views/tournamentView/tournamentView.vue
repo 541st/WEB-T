@@ -58,7 +58,9 @@
 
 <script setup>
 import { ref, onMounted, reactive } from 'vue'
+import { useRouter } from 'vue-router'
 
+const router = useRouter
 const tournaments = ref([])
 const filters = reactive({
   discipline: '',
@@ -90,7 +92,7 @@ onMounted(async () => {
   const token = localStorage.getItem('token')
   if (!token) {
     notify.info("Вы не авторизованы");
-    window.location.href = '/auth'
+    router.push('/auth');
     return
   }
   await fetchTournaments()

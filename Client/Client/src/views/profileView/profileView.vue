@@ -56,6 +56,8 @@ import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { notify } from '@/components/notifier'
 
+const router = useRouter()
+
 const user = ref(null)
 const bookings = ref([])
 
@@ -131,7 +133,6 @@ async function loadLikes() {
 
 onMounted(async () => {
 
-  const router = useRouter()
   const token = localStorage.getItem('token')
   if (!token) {
     notify.info("Вы не авторизованы");
@@ -145,8 +146,8 @@ onMounted(async () => {
 function logout() {
   localStorage.removeItem('token')
   profileData.value = null
-  router.push('/auth').then(() => {
-    window.location.reload() 
+  window.location.reload().then(() => {
+      router.push('/auth')
   })
 
   notify.success("Вы вышли из системы")

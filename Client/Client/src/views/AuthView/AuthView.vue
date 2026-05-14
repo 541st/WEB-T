@@ -120,6 +120,9 @@
 <script setup>
 import { onMounted, ref } from 'vue'
 import { notify } from '@/components/notifier'
+import { useRouter } from 'vue-router'
+
+const router = useRouter
 
 const mode = ref('login') // login | register | reset
 
@@ -134,7 +137,7 @@ onMounted(() => {
   const token = localStorage.getItem('token')
   
   if (token) {
-    window.location.href = '/profile' 
+    router.push('/profile')
   }
 })
 
@@ -159,7 +162,7 @@ const submit = async () => {
 
     notify.success("Успешный вход!");
     localStorage.setItem('token', data.token)
-    window.location.href = '/profile'
+    router.push('/profile')
 
     // Сохраняем токен
     localStorage.setItem('token', data.token)
