@@ -134,12 +134,12 @@ async function loadLikes() {
 
 onMounted(async () => {
 
-  const token = localStorage.getItem('token')
+  /*const token = localStorage.getItem('token')
   if (!token) {
     notify.info("Вы не авторизованы");
     router.push('/auth')
     return
-  }
+  } */
   await fetchProfile()
   await loadLikes(token) 
 })
