@@ -53,6 +53,7 @@
 
 <script setup>
 import { ref, onMounted } from 'vue'
+import { useRouter } from 'vue-router'
 import { notify } from '@/components/notifier'
 
 const user = ref(null)
@@ -129,10 +130,12 @@ async function loadLikes() {
 }
 
 onMounted(async () => {
+
+  const router = useRouter()
   const token = localStorage.getItem('token')
   if (!token) {
     notify.info("Вы не авторизованы");
-    window.location.href = '/auth'
+    router.push('/auth')
     return
   }
   await fetchProfile()
@@ -141,7 +144,7 @@ onMounted(async () => {
 
 function logout() {
   localStorage.removeItem('token')
-  window.location.href = '/auth'
+  router.push('/auth')
 }
 
 </script>
