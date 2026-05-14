@@ -7,5 +7,5 @@
     "jsx": "preserve",
     "types": ["vite/client"]
   },
-  "include": ["src"]
+  "include": ["src", "env.d.ts"]
 }
