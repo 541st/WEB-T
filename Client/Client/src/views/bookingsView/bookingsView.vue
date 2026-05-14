@@ -90,6 +90,8 @@
 import { ref, onMounted, computed } from 'vue' 
 import { notify } from '@/components/notifier'
 import { useRoute } from 'vue-router'
+import { useRouter } from 'vue-router'
+const router = useRouter()
 
 const route = useRoute()
 
@@ -120,7 +122,7 @@ onMounted(async () => {
   const token = localStorage.getItem('token')
 
   if (!token) {
-    window.location.href = '/auth'
+    router.push('/auth')
     return
   }
   const [pcRes, bundleRes] = await Promise.all([
