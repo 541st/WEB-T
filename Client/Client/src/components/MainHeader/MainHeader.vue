@@ -1,7 +1,7 @@
 <template>
   <header class="main-header">
     <nav class="nav">
-        <a href="/" class = "logo"><img src="../../../Pictures/pngwingcom_negate.png" class="logo-IMG"></a>
+        <a href="/" class = "logo"><img src="/Pictures/pngwingcom_negate.png" class="logo-IMG"></a>
 
             <div class="menu">
                 <router-link to="/tournament">Турниры</router-link>
