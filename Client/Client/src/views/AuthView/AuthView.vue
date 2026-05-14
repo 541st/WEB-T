@@ -121,6 +121,7 @@
 import { onMounted, ref } from 'vue'
 import { notify } from '@/components/notifier'
 import { useRouter } from 'vue-router'
+import { isLoggedIn } from '@/authStatus'
 
 const router = useRouter()
 
@@ -162,6 +163,7 @@ const submit = async () => {
 
     notify.success("Успешный вход!");
     localStorage.setItem('token', data.token)
+    isLoggedIn.value = true
     router.push('/profile')
 
   } catch (err) {

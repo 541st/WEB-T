@@ -18,14 +18,10 @@
 <!-- Сделать чтобы не съедало под мобилки, сделать основной также, в мобилках заскейлить
  чтобы не было сильно большим-->
  <script setup>
-    import { computed } from 'vue'
     import { useRouter } from 'vue-router'
+    import { isLoggedIn } from '@/authStatus'
 
     const router = useRouter()
-
-    const isLoggedIn = computed(() => {
-        return !!localStorage.getItem('token')
-    })
 
     function goToAuthOrProfile() {
         if (isLoggedIn.value) {

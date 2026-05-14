@@ -55,6 +55,7 @@
 import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { notify } from '@/components/notifier'
+import { isLoggedIn } from '@/authStatus'
 
 const router = useRouter()
 
@@ -145,12 +146,13 @@ onMounted(async () => {
 
 function logout() {
   localStorage.removeItem('token')
-  profileData.value = null
-  window.location.reload().then(() => {
-      router.push('/auth')
-  })
-
+  user.value = null
+  bookings.value = []
+  likes.value = []
+  isLoggedIn.value = false
   notify.success("Вы вышли из системы")
+
+  router.push('/auth')
 }
 
 </script>

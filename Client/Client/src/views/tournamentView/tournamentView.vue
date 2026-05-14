@@ -60,7 +60,8 @@
 import { ref, onMounted, reactive } from 'vue'
 import { useRouter } from 'vue-router'
 
-const router = useRouter
+const router = useRouter()
+
 const tournaments = ref([])
 const filters = reactive({
   discipline: '',
